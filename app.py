@@ -157,7 +157,7 @@ if "catalogo_productos" not in st.session_state:
 
 # ─── Barra Lateral: Parámetros del Usuario y del Algoritmo Genético ──────────
 with st.sidebar:
-    st.markdown("## 🎯 Objetivos Nutricionales")
+    st.markdown("## Objetivos Nutricionales")
 
     perfil = st.selectbox(
         "Perfil nutricional rápido",
@@ -197,7 +197,7 @@ with st.sidebar:
     )
 
     st.markdown("---")
-    st.markdown("## 🧬 Parámetros del AGS")
+    st.markdown("##  Parámetros del AGS")
 
     metodo_sel_label = st.selectbox(
         "3. Método de Selección",
@@ -237,7 +237,7 @@ with st.sidebar:
 
     p1, p2 = st.columns(2)
     with p1:
-        tam_poblacion = st.slider("Población (λ)", min_value=20, max_value=300, value=120, step=10)
+        tam_poblacion = st.slider("Población (λ)", min_value=5, max_value=300, value=120, step=5)
         prob_cruce = st.slider("Prob. Cruce (pc)", min_value=0.40, max_value=1.00, value=0.85, step=0.05)
     with p2:
         num_generaciones = st.slider("Generaciones (T)", min_value=20, max_value=500, value=250, step=10)
@@ -255,13 +255,13 @@ with st.sidebar:
         usar_semilla_fija = st.checkbox("Usar semilla fija (reproducibilidad)", value=True)
         valor_semilla = st.number_input("Semilla aleatoria", min_value=1, max_value=99999, value=42, step=1)
 
-    btn_ejecutar = st.button("🚀 Ejecutar Algoritmo Genético", type="primary", use_container_width=True)
+    btn_ejecutar = st.button(" Ejecutar Algoritmo Genético", type="primary", use_container_width=True)
 
 # ─── Encabezado Principal ────────────────────────────────────────────────────
 st.markdown(
     """
     <div class="main-header">
-        <h1>🧬 Sistema de Optimización de Planes de Alimentación Diarios de Mínimo Costo</h1>
+        <h1> Sistema de Optimización de Planes de Alimentación Diarios de Mínimo Costo</h1>
         <p>Algoritmo Genético Simple (Canónico) · Catálogo de 20 Productos del Mercado Local (MXN) · Modelo de Dos Listas</p>
     </div>
     """,
@@ -309,11 +309,11 @@ df_hist = pd.DataFrame(resultado["historial"])
 # ─── Pestañas Principales del Dashboard ──────────────────────────────────────
 tab_menu, tab_proceso, tab_convergencia, tab_catalogo, tab_validacion = st.tabs(
     [
-        "🥗 1. Menú Óptimo y Desglose",
-        "🧬 2. Dos Listas y Proceso del AGS (6 Fases)",
-        "📈 3. Convergencia y Tablas Canónicas (PDF 2)",
-        "🛒 4. Catálogo de 20 Productos (Precios MXN)",
-        "🧪 5. Validación Múltiple y Escalamiento",
+        " 1. Menú Óptimo y Desglose",
+        " 2. Dos Listas y Proceso del AGS (6 Fases)",
+        " 3. Convergencia y Tablas Canónicas (PDF 2)",
+        " 4. Catálogo de 20 Productos (Precios MXN)",
+        " 5. Validación Múltiple y Escalamiento",
     ]
 )
 
@@ -399,12 +399,12 @@ with tab_menu:
             unsafe_allow_html=True,
         )
 
-    st.info(f"🏁 **Criterio de parada cumplido:** {resultado['motivo_parada']}.")
+    st.info(f" **Criterio de parada cumplido:** {resultado['motivo_parada']}.")
 
     col_left, col_right = st.columns([1.35, 1.0])
 
     with col_left:
-        st.markdown("### 🍽️ Plan de Alimentación Diario Óptimo (Mínimo Costo)")
+        st.markdown("###  Plan de Alimentación Diario Óptimo (Mínimo Costo)")
         if not df_menu.empty:
             df_mostrar = df_menu[
                 [
@@ -442,7 +442,7 @@ with tab_menu:
             st.warning("El cromosoma generado no seleccionó porciones.")
 
         # Visualización rápida del vector Cromosoma (Lista 2)
-        st.markdown("#### 🧬 Cromosoma Óptimo (Arreglo de 20 Enteros = Porciones por Producto)")
+        st.markdown("####  Cromosoma Óptimo (Arreglo de 20 Enteros = Porciones por Producto)")
         chips_html = ""
         for item in resultado["mapeo_dos_listas"]:
             clase = "gene-active" if item["porciones"] > 0 else "gene-zero"
@@ -456,7 +456,7 @@ with tab_menu:
         st.markdown(chips_html, unsafe_allow_html=True)
 
     with col_right:
-        st.markdown("### 📊 Cumplimiento de Objetivos Nutricionales")
+        st.markdown("### Cumplimiento de Objetivos Nutricionales")
         df_comp = pd.DataFrame(
             {
                 "Nutriente": ["Calorías (÷10)", "Proteínas (g)", "Carbohidratos (g)", "Grasas (g)"],
@@ -504,13 +504,17 @@ with tab_menu:
         st.plotly_chart(fig_bar, use_container_width=True)
 
         if not df_menu.empty:
+            paleta_menu = [
+                "#0d9488", "#1e3a8a", "#2563eb", "#16a34a", "#0284c7",
+                "#7c3aed", "#d97706", "#059669", "#4f46e5", "#0891b2",
+            ]
             fig_pie = px.pie(
                 df_menu,
                 names="producto",
                 values="subtotal_mxn",
                 hole=0.45,
                 title="Distribución del Costo Diario ($ MXN) por Ingrediente",
-                color_discrete_sequence=px.colors.qualitative.Teal,
+                color_discrete_sequence=paleta_menu,
             )
             fig_pie.update_layout(height=300, margin=dict(l=20, r=20, t=40, b=10))
             st.plotly_chart(fig_pie, use_container_width=True)
@@ -520,7 +524,7 @@ with tab_menu:
 # PESTAÑA 2: LAS DOS LISTAS Y LAS 6 FASES DEL ALGORITMO GENÉTICO SIMPLE
 # =============================================================================
 with tab_proceso:
-    st.markdown("### 🔗 Estructura de Dos Listas en el Algoritmo Genético Simple")
+    st.markdown("### Estructura de Dos Listas en el Algoritmo Genético Simple")
     col_l1, col_l2 = st.columns(2)
 
     with col_l1:
@@ -555,7 +559,7 @@ with tab_proceso:
             unsafe_allow_html=True,
         )
 
-    st.markdown("#### 📋 Correspondencia 1 a 1 entre `lista_productos` (Lista 1) y `lista_porciones` (Lista 2 - Cromosoma)")
+    st.markdown("####  Correspondencia 1 a 1 entre `lista_productos` (Lista 1) y `lista_porciones` (Lista 2 - Cromosoma)")
     st.dataframe(
         df_dos_listas.rename(
             columns={
@@ -577,7 +581,7 @@ with tab_proceso:
     )
 
     st.markdown("---")
-    st.markdown("### 🔄 Las 6 Fases del Proceso del Algoritmo Genético Simple")
+    st.markdown("###  Las 6 Fases del Proceso del Algoritmo Genético Simple")
 
     f1, f2, f3 = st.columns(3)
     with f1:
@@ -654,7 +658,7 @@ with tab_proceso:
 # PESTAÑA 3: CONVERGENCIA Y TABLAS CANÓNICAS (PDF 2 ALGORITMOS GENÉTICOS)
 # =============================================================================
 with tab_convergencia:
-    st.markdown("### 📈 Curvas de Evolución y Convergencia (Figura 6.4 y Sección 3.8 del PDF 2)")
+    st.markdown("###  Curvas de Evolución y Convergencia (Figura 6.4 y Sección 3.8 del PDF 2)")
 
     g_col1, g_col2 = st.columns(2)
 
@@ -782,7 +786,7 @@ with tab_convergencia:
         st.plotly_chart(fig_conv, use_container_width=True)
 
     st.markdown("---")
-    st.markdown("### 📋 Tabla 6.1 (PDF 2): Población Inicial en el Tiempo $t = 0$ y Ruleta Sesgada")
+    st.markdown("###  Tabla 6.1 (PDF 2): Población Inicial en el Tiempo $t = 0$ y Ruleta Sesgada")
     st.caption(
         "Muestra los individuos de la población inicial, su cromosoma (ristra de 20 enteros), "
         "su costo, fitness penalizado, función de adaptación f(x), probabilidad de selección "
@@ -818,7 +822,7 @@ with tab_convergencia:
     )
 
     st.markdown("---")
-    st.markdown("### 📋 Tabla 6.2 (PDF 2): Operadores de Selección, Cruce y Mutación en el Tiempo $t = 1$")
+    st.markdown("###  Tabla 6.2 (PDF 2): Operadores de Selección, Cruce y Mutación en el Tiempo $t = 1$")
     st.caption(
         "Muestra el emparejamiento de padres seleccionados, el punto de cruce, los descendientes "
         "obtenidos tras el cruce y la nueva población de descendientes mutados."
@@ -848,7 +852,7 @@ with tab_convergencia:
 # PESTAÑA 4: CATÁLOGO DE 20 PRODUCTOS (PRECIOS DE MERCADO LOCAL)
 # =============================================================================
 with tab_catalogo:
-    st.markdown("### 🛒 Catálogo de 20 Productos del Mercado Local Mexicano (Profeco / PACIC)")
+    st.markdown("###  Catálogo de 20 Productos del Mercado Local Mexicano (Profeco / PACIC)")
     st.caption(
         "Puedes editar directamente cualquier precio o valor nutricional en la tabla inferior "
         "para simular cambios de precios en el mercado local. Los primeros 3 productos corresponden "
@@ -877,16 +881,16 @@ with tab_catalogo:
 
     col_btn_cat1, col_btn_cat2, _ = st.columns([1, 1, 2])
     with col_btn_cat1:
-        if st.button("💾 Aplicar Cambios al Catálogo", use_container_width=True):
+        if st.button(" Aplicar Cambios al Catálogo", use_container_width=True):
             st.session_state["catalogo_productos"] = df_editado.to_dict(orient="records")
             st.rerun()
     with col_btn_cat2:
-        if st.button("🔄 Restaurar 20 Productos Originales", use_container_width=True):
+        if st.button(" Restaurar 20 Productos Originales", use_container_width=True):
             st.session_state["catalogo_productos"] = obtener_catalogo_base()
             st.rerun()
 
     st.markdown("---")
-    st.markdown("#### 💡 Eficiencia Económico-Nutricional de los 20 Productos")
+    st.markdown("####  Eficiencia Económico-Nutricional de los 20 Productos")
     df_ef = df_editado.copy()
     df_ef["Proteína por cada $10 MXN (g)"] = (df_ef["proteinas_g"] / df_ef["precio_mxn"] * 10.0).round(2)
     df_ef["Calorías por cada $1 MXN (kcal)"] = (df_ef["kcal"] / df_ef["precio_mxn"]).round(1)
@@ -932,7 +936,7 @@ with tab_validacion:
             "comprobar la consistencia del costo y el cumplimiento nutricional."
         )
         num_corridas = st.slider("Número de ejecuciones independientes", min_value=3, max_value=15, value=5)
-        if st.button("▶️ Ejecutar Validación Múltiple", use_container_width=True):
+        if st.button(" Ejecutar Validación Múltiple", use_container_width=True):
             resultados_mult = []
             for corrida in range(1, num_corridas + 1):
                 params_c = ParametrosAGS(
@@ -982,7 +986,7 @@ with tab_validacion:
             "Prueba la escalabilidad controlada del algoritmo (Sección 2.2 y 2.7.7 del PDF 1) "
             "ampliando el catálogo de 15 → 20 → 50 → 100 productos sin modificar la lógica base."
         )
-        if st.button("📈 Ejecutar Prueba de Escalamiento (15 a 100 Productos)", use_container_width=True):
+        if st.button(" Ejecutar Prueba de Escalamiento (15 a 100 Productos)", use_container_width=True):
             tamanos_cat = [15, 20, 50, 100]
             filas_esc = []
             for n_prod in tamanos_cat:

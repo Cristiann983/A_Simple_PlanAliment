@@ -5,7 +5,7 @@ Implementación del Algoritmo Genético Simple (Canónico) para el:
 "Sistema de optimización de planes de alimentación diarios de mínimo costo
 mediante un Algoritmo Genético Simple".
 
-Basado en:
+
 1. Generalidades del Proyecto (Secciones 2.1 a 2.7)
 2. Fundamentos de Algoritmos Genéticos (Algoritmo Genético Simple / Canónico,
    Figura 6.1, Tablas 6.1 y 6.2, Secciones 2 y 3).
@@ -769,7 +769,7 @@ def ejecutar_algoritmo_genetico_simple(
             "proteinas_g": prot_item,
             "carbohidratos_g": carb_item,
             "grasas_g": grasa_item,
-        }
+        }   
         mapeo_dos_listas.append(fila)
         if porciones > 0:
             desglose_menu.append(fila)
